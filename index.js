@@ -6,6 +6,7 @@ const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
 const explorer = cosmiconfig("jesttransformcss");
 const transformConfig = explorer.searchSync();
+const sass = require('node-sass');
 
 module.exports = {
   getCacheKey: (fileData, filename, configString, { instrument }) => {
@@ -45,13 +46,30 @@ module.exports = {
         transformConfig.config.modules) ||
         (typeof transformConfig.config.modules === "function" &&
           transformConfig.config.modules(filename)));
-    if (!useModules) {
-      return stripIndent`
-        const styleInject = require('style-inject');
 
-        styleInject(${JSON.stringify(src)});
-        module.exports = {};
-      `;
+    if (!useModules) {
+
+      if (filename.match(/\.scss$/)) {
+        // convert SCSS to CSS 
+        const resultSass = sass.renderSync({
+          data: src
+        });
+      
+        return stripIndent`
+          const styleInject = require('style-inject');
+
+          styleInject(${JSON.stringify(resultSass.css.toString())});
+          module.exports = {};
+        `;
+      } else {
+        // plain CSS
+        return stripIndent`
+          const styleInject = require('style-inject');
+
+          styleInject(${JSON.stringify(src)});
+          module.exports = {};
+        `;
+      }
     }
 
     // The "process" function of this Jest transform must be sync,

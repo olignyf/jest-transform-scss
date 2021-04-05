@@ -1,14 +1,15 @@
 {
-  "name": "jest-transform-css",
-  "description": "Jest transformer to import CSS into Jest's `jsdom`",
+  "name": "jest-transform-scss",
+  "description": "Jest transformer to import CSS and SCSS into Jest's `jsdom`",
   "version": "2.1.0",
   "main": "index.js",
-  "author": "Dominik Ferber <dominik.ferber+npm@gmail.com> (http://dferber.de/)",
+  "author": "Francois Oligny-Lemieux <frank.quebec+npm@gmail.com> (http://oligny.com/)",
   "license": "MIT",
   "dependencies": {
     "common-tags": "1.8.0",
     "cosmiconfig": "5.0.6",
     "cross-spawn": "6.0.5",
+    "node-sass": "^5.0.0",
     "postcss-load-config": "2.0.0",
     "postcss-modules": "1.3.2",
     "style-inject": "0.3.0"
@@ -22,6 +23,9 @@
   "keywords": [
     "postcss-runner",
     "jest",
-    "css"
+    "css",
+    "scss",
+    "sass",
+    "dart"
   ]
 }
