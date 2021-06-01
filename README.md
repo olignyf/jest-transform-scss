@@ -30,6 +30,13 @@ This doesn't make much sense at first, as `jsdom` is headless (non-visual). Howe
 
 Once we obtained a screenshot, we can compare it to the last version of that screenshot we took, and make tests fail in case they did. The [`jest-image-snapshot`](https://github.com/americanexpress/jest-image-snapshot) plugin does that.
 
+## TODO
+
+Support imports from node_modules with tilde such as 
+ `import "~boostrapbootstrap/scss/bootstrap";`
+For the moment write
+ `@import "node_modules/bootstrap/scss/bootstrap";`
+
 ## Setup
 
 ### Installation
