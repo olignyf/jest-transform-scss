@@ -6,7 +6,7 @@ const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
 const explorer = cosmiconfig("jesttransformcss");
 const transformConfig = explorer.searchSync();
-const sass = require('node-sass');
+const sass = require('sass');
 
 module.exports = {
   getCacheKey: (fileData, filename, configString, { instrument }) => {
