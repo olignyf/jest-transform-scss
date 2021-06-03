@@ -1,7 +1,7 @@
 {
   "name": "jest-transform-scss",
   "description": "Jest transformer to import CSS and SCSS into Jest's `jsdom`",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "author": "Francois Oligny-Lemieux <frank.quebec+npm@gmail.com> (http://github.com/olignyf)",
   "license": "MIT",
@@ -9,13 +9,19 @@
     "common-tags": "1.8.0",
     "cosmiconfig": "5.0.6",
     "cross-spawn": "6.0.5",
+    "node-sass": "^5.0.0",
     "postcss-load-config": "2.0.0",
     "postcss-modules": "1.3.2",
-    "sass": "^1.34.0",
     "style-inject": "0.3.0"
   },
   "devDependencies": {
-    "postcss": "^7.0.2"
+    "bootstrap": "^5.0.1",
+    "eslint": "^7.10.0",
+    "mocha": "^8.1.3",
+    "nyc": "^15.1.0",
+    "postcss": "^7.0.2",
+    "rimraf": "^3.0.2",
+    "unique-temp-dir": "^1.0.0"
   },
   "peerDependencies": {
     "postcss": "^7.0.2"
@@ -27,5 +33,9 @@
     "scss",
     "sass",
     "dart"
-  ]
+  ],
+  "scripts": {
+    "coverage": "nyc npm run test",
+    "test": "mocha test/{*,**/**}.js"
+  }
 }

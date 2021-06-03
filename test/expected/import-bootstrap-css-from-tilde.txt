@@ -1,0 +1,4 @@
+const styleInject = require('style-inject');
+
+styleInject("@import url(C:\\dev\\jest-transform-scss\\node_modules\\bootstrap\\dist\\css\\bootstrap.css);\n");
+module.exports = {};

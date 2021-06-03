@@ -6,7 +6,13 @@ const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
 const explorer = cosmiconfig("jesttransformcss");
 const transformConfig = explorer.searchSync();
-const sass = require('sass');
+const sass = require('node-sass');
+const path = require('path');
+const fixture = path.join.bind(null, __dirname, 'test/fixtures');
+const searchPaths = {
+   curdir: path.join.bind(null, __dirname),
+   node_modules:  path.join.bind(null, __dirname, "node_modules")
+};
 
 module.exports = {
   getCacheKey: (fileData, filename, configString, { instrument }) => {
@@ -52,7 +58,41 @@ module.exports = {
       if (filename.match(/\.scss$/)) {
         // convert SCSS to CSS 
         const resultSass = sass.renderSync({
-          data: src
+          data: src,
+          importer: function(url, prev, done) {
+            // console.log('importer', url, prev, done);
+            let location1, location2, location3;
+            if (prev && prev !== 'stdin') {
+              // include within a previous file
+              const directory = path.dirname(prev);
+              location1 = path.join(directory, url);             
+            } else if (url.indexOf('~') === 0) {
+              // node_modules
+              location1 = searchPaths.node_modules(url.substring(1));    
+              location2 = searchPaths.node_modules(url.substring(1) + '.scss');              
+            } else {
+              location1 = fixture('include-files/' + url + '.scss'); // unit tests
+              location2 = searchPaths.curdir(url);
+              location3 = searchPaths.curdir(url + '.scss');
+            }
+
+            if (fs.existsSync(location1)) {
+              return {
+                file: location1
+              };
+            }
+            if (fs.existsSync(location2)) {
+              return {
+                file: location2
+              }; 
+            }
+            if (fs.existsSync(location3)) {
+              return {
+                file: location3
+              }; 
+            }
+            return sass.NULL;
+          }
         });
       
         return stripIndent`
