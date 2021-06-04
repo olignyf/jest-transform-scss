@@ -62,13 +62,15 @@ module.exports = {
           importer: function(url, prev, done) {
             // console.log('importer', url, prev, done);
             let location1, location2, location3;
+            let includeContent = false;
+            let content;
             if (prev && prev !== 'stdin') {
               // include within a previous file
               const directory = path.dirname(prev);
-              location1 = path.join(directory, url);             
+              location1 = path.join(directory, url);
             } else if (url.indexOf('~') === 0) {
               // node_modules
-              location1 = searchPaths.node_modules(url.substring(1));    
+              location1 = searchPaths.node_modules(url.substring(1));
               location2 = searchPaths.node_modules(url.substring(1) + '.scss');              
             } else {
               location1 = fixture('include-files/' + url + '.scss'); // unit tests
@@ -76,20 +78,32 @@ module.exports = {
               location3 = searchPaths.curdir(url + '.scss');
             }
 
-            if (fs.existsSync(location1)) {
+            const checkIfIncludeContent = (location) => {
+               if (location.endsWith('.css')) {
+                return true;
+               }
+            };
+
+            const returnRoutine = (location) => {
+              const viaContent = checkIfIncludeContent(location);
+              if (viaContent) {
+                return {
+                  contents: fs.readFileSync(location, {encoding: 'utf8'})
+                };
+              }
               return {
-                file: location1
+                file: location
               };
+            };
+
+            if (fs.existsSync(location1)) {
+              return returnRoutine(location1);
             }
             if (fs.existsSync(location2)) {
-              return {
-                file: location2
-              }; 
+              return returnRoutine(location2);
             }
-            if (fs.existsSync(location3)) {
-              return {
-                file: location3
-              }; 
+            if (fs.existsSync(location3)) {              
+              return returnRoutine(location3);
             }
             return sass.NULL;
           }
