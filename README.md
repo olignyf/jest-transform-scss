@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/olignyf/jest-transform-scss.svg?branch=master)](https://travis-ci.com/olignyf/jest-transform-scss)
+
 # jest-transform-scss
 
 A Jest transformer which enables importing CSS or SCSS into Jest's `jsdom`. Uses dart for SCSS/SASS transform.
