@@ -61,9 +61,7 @@ module.exports = {
           data: src,
           importer: function(url, prev, done) {
             // console.log('importer', url, prev, done);
-            let location1, location2, location3;
-            let includeContent = false;
-            let content;
+            let location1, location2, location3, location4;
             if (prev && prev !== 'stdin') {
               // include within a previous file
               const directory = path.dirname(prev);
@@ -73,19 +71,20 @@ module.exports = {
               location1 = searchPaths.node_modules(url.substring(1));
               location2 = searchPaths.node_modules(url.substring(1) + '.scss');              
             } else {
-              location1 = fixture('include-files/' + url + '.scss'); // unit tests
+              location1 = url;
               location2 = searchPaths.curdir(url);
               location3 = searchPaths.curdir(url + '.scss');
+              location4 = fixture('include-files/' + url + '.scss'); // unit tests
             }
 
-            const checkIfIncludeContent = (location) => {
+            const checkIfWeShouldIncludeContentDirectly = (location) => {
                if (location.endsWith('.css')) {
                 return true;
                }
             };
 
             const returnRoutine = (location) => {
-              const viaContent = checkIfIncludeContent(location);
+              const viaContent = checkIfWeShouldIncludeContentDirectly(location);
               if (viaContent) {
                 return {
                   contents: fs.readFileSync(location, {encoding: 'utf8'})
@@ -102,8 +101,11 @@ module.exports = {
             if (fs.existsSync(location2)) {
               return returnRoutine(location2);
             }
-            if (fs.existsSync(location3)) {              
+            if (fs.existsSync(location3)) {
               return returnRoutine(location3);
+            }
+            if (fs.existsSync(location4)) {
+              return returnRoutine(location4);
             }
             return sass.NULL;
           }
