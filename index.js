@@ -11,7 +11,7 @@ const path = require('path');
 const fixture = path.join.bind(null, __dirname, 'test/fixtures');
 const searchPaths = {
    curdir: path.join.bind(null, __dirname),
-   node_modules:  path.join.bind(null, __dirname, "node_modules")
+   node_modules:  path.join.bind(null, __dirname, "../../node_modules")
 };
 
 module.exports = {
@@ -66,10 +66,15 @@ module.exports = {
               // include within a previous file
               const directory = path.dirname(prev);
               location1 = path.join(directory, url);
+              if (url.indexOf('~') === 0) {
+                // node_modules
+                location2 = searchPaths.node_modules(url.substring(1));
+                location3 = searchPaths.node_modules(url.substring(1) + '.scss');
+              }
             } else if (url.indexOf('~') === 0) {
               // node_modules
               location1 = searchPaths.node_modules(url.substring(1));
-              location2 = searchPaths.node_modules(url.substring(1) + '.scss');              
+              location2 = searchPaths.node_modules(url.substring(1) + '.scss');
             } else {
               location1 = url;
               location2 = searchPaths.curdir(url);
