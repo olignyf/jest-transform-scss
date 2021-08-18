@@ -2,8 +2,11 @@
 
 # jest-transform-scss
 
+Github repo jest-transform-css (https://github.com/olignyf/jest-transform-scss)
+
 A Jest transformer which enables importing CSS or SCSS into Jest's `jsdom`. Uses dart for SCSS/SASS transform.
 Supports @import directives. 
+
 Based on jest-transform-css (https://github.com/dferber90/jest-transform-css)
 
 **If you are not here for Visual Regression Testing, but just want to make your tests work with CSS Modules, then you are likely looking for https://github.com/keyanzhang/identity-obj-proxy/.**
@@ -18,7 +21,7 @@ Based on jest-transform-css (https://github.com/dferber90/jest-transform-css)
 > I am not too familiar with PostCSS and Jest, so further simplification of
 > this plugin might be possible. I'd appreciate any hints!
 >
-> If this approach is working for you, please let me know by starring the [GitHub repo](https://github.com/olignyf/jest-transform-scss).
+> If this approach is working for you, please let me know by starring the [GitHub repo https://github.com/olignyf/jest-transform-scss](https://github.com/olignyf/jest-transform-scss).
 >
 > I am looking for contributors to help improve this package!
 
