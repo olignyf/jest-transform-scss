@@ -4,10 +4,19 @@
 
 Github repo jest-transform-css (https://github.com/olignyf/jest-transform-scss)
 
-A Jest transformer which enables importing CSS or SCSS into Jest's `jsdom`. Uses dart for SCSS/SASS transform.
-Supports @import directives. 
+It can be used in conjunction with 'visual-screenshot' (https://github.com/olignyf/visual-screenshot) to take the screenshot and 'jest-image-snapshot' (https://github.com/americanexpress/jest-image-snapshot) to compare with previous screenshot using the function 'toMatchImageSnapshot'.
 
-Based on jest-transform-css (https://github.com/dferber90/jest-transform-css)
+An example repo will come soon.
+
+This package is a jest transformer which enables importing CSS or SCSS into Jest's `jsdom`. 
+It uses dart for SCSS/SASS transform.
+It supports @import directives from both direct path and path from node_modules using the ~ tilde.
+
+## History
+
+This package was based on jest-transform-css (https://github.com/dferber90/jest-transform-css)
+
+## Note 
 
 **If you are not here for Visual Regression Testing, but just want to make your tests work with CSS Modules, then you are likely looking for https://github.com/keyanzhang/identity-obj-proxy/.**
 
