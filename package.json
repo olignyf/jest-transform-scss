@@ -1,7 +1,7 @@
 {
   "name": "jest-transform-scss",
   "description": "Jest transformer to import CSS and SCSS into Jest's `jsdom`",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "main": "index.js",
   "author": "Francois Oligny-Lemieux <frank.quebec+npm@gmail.com> (http://github.com/olignyf)",
   "license": "MIT",
