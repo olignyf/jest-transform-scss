@@ -1,11 +1,8 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const crossSpawn = require("cross-spawn");
-const cosmiconfig = require("cosmiconfig");
 const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
-const explorer = cosmiconfig("jesttransformcss");
-const transformConfig = explorer.searchSync();
 const sass = require('node-sass');
 const path = require('path');
 const fixture = path.join.bind(null, __dirname, 'test/fixtures');
@@ -16,7 +13,13 @@ const searchPaths = {
 };
 
 module.exports = {
-  getCacheKey: (fileData, filename, configString, { instrument }) => {
+  getCacheKey: (fileData, filename, configString, options) => {
+    // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument
+    if (!options) {
+      options = configString;
+      configString = options.configString;
+    }
+    const { instrument } = options;
     return (
       crypto
         .createHash("md5")
@@ -28,7 +31,7 @@ module.exports = {
         .update("\0", "utf8")
         .update(configString)
         .update("\0", "utf8")
-        .update(JSON.stringify(transformConfig))
+        .update(JSON.stringify(options.transformerConfig))
         // TODO load postcssrc (the config) sync and make it part of the cache
         // key
         // .update("\0", "utf8")
@@ -41,26 +44,20 @@ module.exports = {
 
   process: (src, filename, config, options) => {
     // skip when plain CSS is used
-    // You can create jesttransformcss.config.js in your project and add
-    // module.exports = { modules: true };
-    // or
-    // module.exports = { modules: filename => filename.endsWith(".mod.css") };
-    // to enable css module transformation. for all or for certain files.
+    // You can pass config to the transformer in jest.config.js like so:
+    // "^.+\\.css$": ["jest-transform-css", { modules: true }]
+    // to enable css module transformation.
     const useModules =
-      transformConfig &&
-      transformConfig.config &&
-      ((typeof transformConfig.config.modules === "boolean" &&
-        transformConfig.config.modules) ||
-        (typeof transformConfig.config.modules === "function" &&
-          transformConfig.config.modules(filename)));
-
+      config &&
+      config.transformerConfig &&
+      ((typeof config.transformerConfig.modules === "boolean" &&
+        config.transformerConfig.modules));
     if (!useModules) {
-
       if (filename.match(/\.scss$/)) {
         // convert SCSS to CSS 
         const resultSass = sass.renderSync({
           data: src,
-          importer: function(url, prev, done) {
+          importer: function (url, prev, done) {
             // console.log('importer', url, prev, done);
             let location1, location2, location3, location4, location5;
             if (prev && prev !== 'stdin') {
@@ -88,16 +85,16 @@ module.exports = {
             }
 
             const checkIfWeShouldIncludeContentDirectly = (location) => {
-               if (location.endsWith('.css')) {
+              if (location.endsWith('.css')) {
                 return true;
-               }
+              }
             };
 
             const returnRoutine = (location) => {
               const viaContent = checkIfWeShouldIncludeContentDirectly(location);
               if (viaContent) {
                 return {
-                  contents: fs.readFileSync(location, {encoding: 'utf8'})
+                  contents: fs.readFileSync(location, { encoding: 'utf8' })
                 };
               }
               return {
@@ -124,20 +121,24 @@ module.exports = {
           }
         });
       
-        return stripIndent`
-          const styleInject = require('style-inject');
+        return {
+          code: stripIndent`
+            const styleInject = require('style-inject');
 
-          styleInject(${JSON.stringify(resultSass.css.toString())});
-          module.exports = {};
-        `;
+            styleInject(${JSON.stringify(resultSass.css.toString())});
+            module.exports = {};
+          `,
+        };
       } else {
         // plain CSS
-        return stripIndent`
-          const styleInject = require('style-inject');
+        return {
+          code: stripIndent`
+            const styleInject = require('style-inject');
 
-          styleInject(${JSON.stringify(src)});
-          module.exports = {};
-        `;
+            styleInject(${JSON.stringify(src)});
+            module.exports = {};
+          `,
+        };
       }
     }
 
@@ -153,12 +154,12 @@ module.exports = {
           ${JSON.stringify({
             src,
             filename,
-            transformConfig: transformConfig.config
+            transformConfig: config.transformerConfig,
             // options
           })}
         )
         .then(out => { console.log(JSON.stringify(out)) })
-      `
+      `,
     ]);
 
     // check for errors of postcss-runner.js
@@ -171,29 +172,33 @@ module.exports = {
     try {
       // we likely logged something to the console from postcss-runner
       // in order to debug, and hence the parsing fails!
-      parsed = JSON.parse(result.stdout.toString());
+      const parsed = JSON.parse(result.stdout.toString());
       css = parsed.css;
       tokens = parsed.tokens;
       if (Array.isArray(parsed.warnings))
-        parsed.warnings.forEach(warning => {
+        parsed.warnings.forEach((warning) => {
           console.warn(warning);
         });
     } catch (error) {
       // we forward the logs and return no mappings
       console.error(result.stderr.toString());
       console.log(result.stdout.toString());
-      return stripIndent`
-        console.error("transform-css: Failed to load '${filename}'");
-        module.exports = {};
-      `;
+      return {
+        code: stripIndent`
+          console.error("transform-css: Failed to load '${filename}'");
+          module.exports = {};
+        `,
+      };
     }
 
     // Finally, inject the styles to the document
-    return stripIndent`
-      const styleInject = require('style-inject');
+    return {
+      code: stripIndent`
+        const styleInject = require('style-inject');
 
-      styleInject(${JSON.stringify(css)});
-      module.exports = ${JSON.stringify(tokens)};
-    `;
-  }
+        styleInject(${JSON.stringify(css)});
+        module.exports = ${JSON.stringify(tokens)};
+      `,
+    };
+  },
 };
