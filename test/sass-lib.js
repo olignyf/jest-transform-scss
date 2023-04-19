@@ -5,7 +5,7 @@ var assert = require('assert').strict,
   path = require('path'),
   read = fs.readFileSync,
   jestTransformScss = require('../index'),
-  sass = require('node-sass'),
+  sass = require('sass'),
   fixture = path.join.bind(null, __dirname, 'fixtures'),
   resolveFixture = path.resolve.bind(null, __dirname, 'fixtures');
 

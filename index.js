@@ -6,7 +6,7 @@ const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
 const explorer = cosmiconfig("jesttransformcss");
 const transformConfig = explorer.searchSync();
-const sass = require('node-sass');
+const sass = require('sass');
 const path = require('path');
 const fixture = path.join.bind(null, __dirname, 'test/fixtures');
 const searchPaths = {
@@ -57,7 +57,7 @@ module.exports = {
     if (!useModules) {
 
       if (filename.match(/\.scss$/)) {
-        // convert SCSS to CSS 
+        // convert SCSS to CSS
         const resultSass = sass.renderSync({
           data: src,
           importer: function(url, prev, done) {
@@ -123,7 +123,7 @@ module.exports = {
             return sass.NULL;
           }
         });
-      
+
         return stripIndent`
           const styleInject = require('style-inject');
 
