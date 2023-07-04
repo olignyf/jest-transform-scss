@@ -1,7 +1,7 @@
 {
   "name": "@fergiektid/jest-transform-scss",
   "description": "Jest transformer to import CSS and SCSS into Jest's `jsdom`",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "index.js",
   "author": "Ian Ferguson <fergiektid@gmail.com> (http://github.com/fergiektid)",
   "license": "MIT",
