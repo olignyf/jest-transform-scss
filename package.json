@@ -1,7 +1,7 @@
 {
   "name": "@fergiektid/jest-transform-scss",
   "description": "Jest transformer to import CSS and SCSS into Jest's `jsdom`",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "author": "Ian Ferguson <fergiektid@gmail.com> (http://github.com/fergiektid)",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "common-tags": "1.8.2",
     "cosmiconfig": "5.0.6",
     "cross-spawn": "7.0.3",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.1",
     "postcss-load-config": "2.0.0",
     "postcss-modules": "4.3.1",
     "style-inject": "0.3.0"
