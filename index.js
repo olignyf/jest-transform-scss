@@ -3,12 +3,12 @@ const crypto = require("crypto");
 const crossSpawn = require("cross-spawn");
 const stripIndent = require("common-tags/lib/stripIndent");
 const THIS_FILE = fs.readFileSync(__filename);
-const sass = require('node-sass');
+const sass = require('sass');
 const path = require('path');
 const fixture = path.join.bind(null, __dirname, 'test/fixtures');
 const searchPaths = {
    curdir: path.join.bind(null, __dirname),
-   node_modules:  path.join.bind(null, __dirname, "../../node_modules"),
+   node_modules:  path.join.bind(null, __dirname, "../../../node_modules"),
    our_node_modules:  path.join.bind(null, __dirname, "node_modules"),
 };
 
