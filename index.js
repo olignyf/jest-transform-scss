@@ -9,7 +9,8 @@ const fixture = path.join.bind(null, __dirname, 'test/fixtures');
 const searchPaths = {
    curdir: path.join.bind(null, __dirname),
    node_modules:  path.join.bind(null, __dirname, "../../../node_modules"),
-   our_node_modules:  path.join.bind(null, __dirname, "node_modules"),
+   our_node_modules: path.join.bind(null, __dirname, "node_modules"),
+   cwd_node_modules: path.join.bind(null, process.cwd(), "node_modules")
 };
 
 module.exports = {
@@ -59,7 +60,7 @@ module.exports = {
           data: src,
           importer: function (url, prev, done) {
             // console.log('importer', url, prev, done);
-            let location1, location2, location3, location4, location5;
+            let location1, location2, location3, location4, location5, location6, location7;
             if (prev && prev !== 'stdin') {
               // include within a previous file
               const directory = path.dirname(prev);
@@ -70,6 +71,10 @@ module.exports = {
                 location3 = searchPaths.node_modules(url.substring(1) + '.scss');
                 location4 = searchPaths.our_node_modules(url.substring(1));
                 location5 = searchPaths.our_node_modules(url.substring(1) + '.scss');
+                location6 = searchPaths.cwd_node_modules(url.substring(1));
+                location7 = searchPaths.cwd_node_modules(url.substring(1) + '.scss');
+                
+                
               }
             } else if (url.indexOf('~') === 0) {
               // node_modules
@@ -77,6 +82,8 @@ module.exports = {
               location2 = searchPaths.node_modules(url.substring(1) + '.scss');
               location3 = searchPaths.our_node_modules(url.substring(1));
               location4 = searchPaths.our_node_modules(url.substring(1) + '.scss');
+              location6 = searchPaths.cwd_node_modules(url.substring(1));
+              location7 = searchPaths.cwd_node_modules(url.substring(1) + '.scss');
             } else {
               location1 = url;
               location2 = searchPaths.curdir(url);
@@ -116,6 +123,12 @@ module.exports = {
             }
             if (fs.existsSync(location5)) {
               return returnRoutine(location5);
+            }
+            if (fs.existsSync(location6)) {
+              return returnRoutine(location6);
+            }
+            if (fs.existsSync(location7)) {
+              return returnRoutine(location7);
             }
             return sass.NULL;
           }
