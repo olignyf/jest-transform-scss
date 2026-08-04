@@ -44,12 +44,29 @@ This doesn't make much sense at first, as `jsdom` is headless (non-visual). Howe
 
 Once we obtained a screenshot, we can compare it to the last version of that screenshot we took, and make tests fail in case they did. The [`jest-image-snapshot`](https://github.com/americanexpress/jest-image-snapshot) plugin does that.
 
+## Supported 
+
+@import 'any-file.scss'
+
+Nested @import inside imported files 
+
+Import of css/scss from node_modules:
+@import '@someModule/styles/theme.scss';
+@import '~boostrap-less-port/dist/css/boostrap.css';
+
+Note: Sometimes path from the root dir is necessary:
+@import 'src/scss/responsive.scss';
+
 ## TODO
 
-Support imports from node_modules with tilde such as 
- `import "~boostrapbootstrap/scss/bootstrap";`
-For the moment write
- `@import "node_modules/bootstrap/scss/bootstrap";`
+Support multi-level imports from relative path
+ `import "src/scss/main.scss";`
+  => `@import "colors.scss";`
+  => `@import "responsive.scss";`
+Instead write:
+ `import "src/scss/main.scss";`
+  => `@import "src/scss/colors.scss";`
+  => `@import "src/scss/responsive.scss";`
 
 ## Setup
 
@@ -87,6 +104,15 @@ transform: {
   "^.+\\.js$": "babel-jest",
   "^.+\\.css$": "jest-transform-scss"
   "^.+\\.scss$": "jest-transform-scss"
+}
+```
+or what I use in projects:
+```
+// in the Jest config
+transform: {
+  "^.+\\.(js|jsx|mjs|tsx|ts)$": "babel-jest",
+  "^.+\\.svg$": "jest-transform-file",
+  "^.+\\.(css|styl|less|sass|scss)$": "jest-transform-scss"
 }
 ```
 
@@ -155,3 +181,11 @@ You can apply certain plugins only when `process.env.NODE_ENV === 'test'`. Ensur
 
 If your setup is using `css-loader` only, without PostCSS then you should be fine.
 If you have `modules: true` enabled in `css-loader`, you need to also enable it for `jest-transform-scss` (see "Enabling CSS modules"). When components import CSS modules in the test environment, then the CSS is transformed through PostCSS's `cssModules` plugin to generate the classnames. It also injects the styles into `jsdom`.
+
+# Develop 
+
+```
+nvm use 18
+yarn
+yarn dev
+``

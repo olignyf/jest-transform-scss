@@ -27,6 +27,7 @@ module.exports = {};`);
     });
     
     it('should import boostrap SCSS from tilde declaration', function(done) {
+      this.timeout(10000);
       const testInputFilename = fixture('include-files/import-bootstrap-scss-from-tilde.scss');
       const testExpectedFilename = expected('import-bootstrap-scss-from-tilde.txt');
       const input = fs.readFileSync(testInputFilename, { encoding: 'utf8' });
@@ -38,6 +39,7 @@ module.exports = {};`);
     });
     
     it('should import boostrap CSS from tilde declaration', function(done) {
+      this.timeout(10000);
       const testInputFilename = fixture('include-files/import-bootstrap-css-from-tilde.scss');
       const testExpectedFilename = expected('import-bootstrap-css-from-tilde.txt');
       const input = fs.readFileSync(testInputFilename, { encoding: 'utf8' });

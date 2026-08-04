@@ -74,18 +74,18 @@ module.exports = {
                 location4 = searchPaths.our_node_modules(url.substring(1));
                 location5 = searchPaths.our_node_modules(url.substring(1) + '.scss');
               }
-            } else if (url.indexOf('~') === 0) {
+              } else if (url.indexOf('~') === 0) {
               // node_modules
               location1 = searchPaths.node_modules(url.substring(1));
               location2 = searchPaths.node_modules(url.substring(1) + '.scss');
               location3 = searchPaths.our_node_modules(url.substring(1));
               location4 = searchPaths.our_node_modules(url.substring(1) + '.scss');
-            } else {
+              } else {
               location1 = url;
               location2 = searchPaths.curdir(url);
               location3 = searchPaths.curdir(url + '.scss');
               location4 = fixture('include-files/' + url + '.scss'); // unit tests
-            }
+              }
 
             const checkIfWeShouldIncludeContentDirectly = (location) => {
                if (location.endsWith('.css')) {
